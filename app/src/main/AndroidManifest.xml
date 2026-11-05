@@ -3,6 +3,29 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!--
+        Разрешения на камеру и галерею не запрашиваем намеренно:
+        - фото из галереи выбирается через системный Photo Picker (PickVisualMedia) — он не требует
+          READ_MEDIA_IMAGES / READ_EXTERNAL_STORAGE; на старых версиях без Picker-а
+          AndroidX сам откатывается на ACTION_OPEN_DOCUMENT;
+        - снимок делает системное приложение камеры (ACTION_IMAGE_CAPTURE / TakePicture) в наш файл
+          через FileProvider. Пока в манифесте нет android.permission.CAMERA, этот интент разрешения не требует.
+        - резюме скачивается в app-specific папку (getExternalFilesDir), тоже без разрешений.
+    -->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <queries>
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="application/pdf" />
+        </intent>
+    </queries>
+
     <application
         android:name=".StarWarsApplication"
         android:allowBackup="true"
@@ -20,6 +43,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

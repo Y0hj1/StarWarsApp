@@ -24,7 +24,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import ru.urfu.starwars.presentation.common.StubScreen
+import ru.urfu.starwars.feature.profile.presentation.edit.EditProfileScreen
+import ru.urfu.starwars.feature.profile.presentation.view.ProfileScreen
 import ru.urfu.starwars.presentation.favorites.FavoritesScreen
 import ru.urfu.starwars.presentation.filters.FiltersScreen
 import ru.urfu.starwars.presentation.people.details.PersonDetailsScreen
@@ -110,7 +111,13 @@ fun AppNavHost() {
             }
             navigation<ProfileGraph>(startDestination = ProfileRoute) {
                 composable<ProfileRoute> {
-                    StubScreen("Профиль", Icons.Filled.Person)
+                    ProfileScreen(onEditClick = { navController.navigate(EditProfileRoute) })
+                }
+                composable<EditProfileRoute> {
+                    EditProfileScreen(
+                        onBack = { navController.popBackStack() },
+                        onSaved = { navController.popBackStack() },
+                    )
                 }
             }
         }

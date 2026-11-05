@@ -14,3 +14,4 @@ import kotlinx.serialization.Serializable
 @Serializable data object FavoritesRoute
 @Serializable data class FavoriteDetailsRoute(val id: Int)
 @Serializable data object ProfileRoute
+@Serializable data object EditProfileRoute

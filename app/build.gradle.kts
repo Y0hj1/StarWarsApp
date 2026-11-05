@@ -84,5 +84,8 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.datastore.preferences)
 
+    // Картинки
+    implementation(libs.coil.compose)
+
     testImplementation(libs.junit)
 }
