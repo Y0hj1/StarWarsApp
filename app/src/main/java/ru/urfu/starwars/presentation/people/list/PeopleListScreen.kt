@@ -12,7 +12,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
@@ -36,18 +44,33 @@ import kotlinx.coroutines.flow.filter
 import ru.urfu.starwars.domain.model.Person
 import ru.urfu.starwars.presentation.common.FullScreenError
 import ru.urfu.starwars.presentation.common.FullScreenLoading
+import ru.urfu.starwars.presentation.common.FullScreenMessage
 import ru.urfu.starwars.presentation.common.InitialsAvatar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PeopleListScreen(
     onPersonClick: (Int) -> Unit,
+    onFiltersClick: () -> Unit,
     viewModel: PeopleListViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val showBadge by viewModel.showFilterBadge.collectAsStateWithLifecycle()
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Персонажи") }) },
+        topBar = {
+            TopAppBar(
+                title = { Text("Персонажи") },
+                actions = {
+                    IconButton(onClick = onFiltersClick) {
+                        // Бейдж-точка, если фильтры отличаются от дефолтных
+                        BadgedBox(badge = { if (showBadge) Badge() }) {
+                            Icon(Icons.Filled.FilterList, contentDescription = "Фильтры")
+                        }
+                    }
+                },
+            )
+        },
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
     ) { padding ->
         Box(
@@ -95,6 +118,21 @@ private fun PeopleList(
             .distinctUntilChanged()
             .filter { it }
             .collect { onLoadMore() }
+    }
+
+    if (state.people.isEmpty() && !state.canLoadMore && !state.isLoadingMore) {
+        // Прокручиваемый контейнер, чтобы pull-to-refresh работал и на пустом экране
+        Box(
+            Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+        ) {
+            FullScreenMessage(
+                title = "Никого не найдено",
+                subtitle = state.loadMoreError ?: "Попробуйте изменить фильтры",
+            )
+        }
+        return
     }
 
     LazyColumn(

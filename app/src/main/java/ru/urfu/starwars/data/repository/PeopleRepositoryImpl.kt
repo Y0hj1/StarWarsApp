@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
+import ru.urfu.starwars.data.local.FavoritesDao
+import ru.urfu.starwars.data.local.toDomain
 import ru.urfu.starwars.data.mapper.toDomain
 import ru.urfu.starwars.data.remote.SwapiApi
 import ru.urfu.starwars.di.IoDispatcher
@@ -19,21 +21,23 @@ import kotlin.coroutines.cancellation.CancellationException
 @Singleton
 class PeopleRepositoryImpl @Inject constructor(
     private val api: SwapiApi,
+    private val favoritesDao: FavoritesDao,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : PeopleRepository {
 
     /** Простой кэш в памяти: всё, что пришло со страниц списка, сразу доступно на деталях. */
     private val personCache = ConcurrentHashMap<Int, Person>()
 
-    override suspend fun getPeople(page: Int): PeoplePage = withContext(ioDispatcher) {
-        api.getPeople(page = page).toDomain().also { result ->
+    override suspend fun getPeople(page: Int, search: String?): PeoplePage = withContext(ioDispatcher) {
+        api.getPeople(page = page, search = search).toDomain().also { result ->
             result.people.forEach { personCache[it.id] = it }
         }
     }
 
     override fun observePerson(id: Int): Flow<Person> = flow {
-        val cached = personCache[id]
+        val cached = personCache[id] ?: favoritesDao.getById(id)?.toDomain()
         if (cached != null) emit(cached)
+
         val fresh = try {
             api.getPerson(id).toDomain()
         } catch (e: CancellationException) {

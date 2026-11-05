@@ -10,5 +10,7 @@ import kotlinx.serialization.Serializable
 // Экраны
 @Serializable data object PeopleListRoute
 @Serializable data class PersonDetailsRoute(val id: Int)
+@Serializable data object FiltersRoute
 @Serializable data object FavoritesRoute
+@Serializable data class FavoriteDetailsRoute(val id: Int)
 @Serializable data object ProfileRoute
