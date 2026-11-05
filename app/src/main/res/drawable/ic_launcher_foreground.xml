@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Простая звезда на тёмном фоне -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFE81F"
+        android:pathData="M54,30 L60.5,47.5 L79,48 L64.5,59.5 L69.5,77.5 L54,67 L38.5,77.5 L43.5,59.5 L29,48 L47.5,47.5 Z" />
+</vector>
