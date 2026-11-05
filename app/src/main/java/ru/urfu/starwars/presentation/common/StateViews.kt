@@ -45,3 +45,17 @@ fun FullScreenError(message: String, onRetry: () -> Unit, modifier: Modifier = M
         Button(onClick = onRetry) { Text("Повторить") }
     }
 }
+
+@Composable
+fun FullScreenMessage(title: String, subtitle: String, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(title, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
+        Text(subtitle, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center)
+    }
+}

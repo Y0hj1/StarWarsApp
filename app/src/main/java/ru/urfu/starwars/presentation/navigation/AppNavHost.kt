@@ -25,6 +25,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import ru.urfu.starwars.presentation.common.StubScreen
+import ru.urfu.starwars.presentation.favorites.FavoritesScreen
+import ru.urfu.starwars.presentation.filters.FiltersScreen
 import ru.urfu.starwars.presentation.people.details.PersonDetailsScreen
 import ru.urfu.starwars.presentation.people.list.PeopleListScreen
 
@@ -83,15 +85,27 @@ fun AppNavHost() {
                 composable<PeopleListRoute> {
                     PeopleListScreen(
                         onPersonClick = { id -> navController.navigate(PersonDetailsRoute(id)) },
+                        onFiltersClick = { navController.navigate(FiltersRoute) },
                     )
                 }
                 composable<PersonDetailsRoute> {
                     PersonDetailsScreen(onBack = { navController.popBackStack() })
                 }
+                composable<FiltersRoute> {
+                    FiltersScreen(
+                        onBack = { navController.popBackStack() },
+                        onDone = { navController.popBackStack() },
+                    )
+                }
             }
             navigation<FavoritesGraph>(startDestination = FavoritesRoute) {
                 composable<FavoritesRoute> {
-                    StubScreen("Избранное", Icons.Filled.Star)
+                    FavoritesScreen(
+                        onPersonClick = { id -> navController.navigate(FavoriteDetailsRoute(id)) },
+                    )
+                }
+                composable<FavoriteDetailsRoute> {
+                    PersonDetailsScreen(onBack = { navController.popBackStack() })
                 }
             }
             navigation<ProfileGraph>(startDestination = ProfileRoute) {
