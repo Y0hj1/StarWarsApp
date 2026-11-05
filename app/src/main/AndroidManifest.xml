@@ -2,6 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Пуш-уведомление о паре (на Android 13+ запрашивается в рантайме) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!--
+        Точный будильник. До Android 12 разрешение не нужно, на 12 (API 31-32) хватает SCHEDULE_EXACT_ALARM,
+        с 13-го USE_EXACT_ALARM выдаётся автоматически (для учебного проекта ок; в Google Play оно
+        разрешено только будильникам/календарям). Если разрешения нет, ставим неточный будильник.
+    -->
+    <uses-permission
+        android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 
     <!--
         Разрешения на камеру и галерею не запрашиваем намеренно:
@@ -43,6 +54,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".feature.profile.data.reminder.LessonReminderReceiver"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

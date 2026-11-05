@@ -10,6 +10,7 @@ internal data class ProfileDto(
     val position: String = "",
     val avatarUri: String? = null,
     val resumeUrl: String = "",
+    val lessonTime: String = "",
 )
 
 internal fun ProfileDto.toDomain() = Profile(
@@ -17,6 +18,7 @@ internal fun ProfileDto.toDomain() = Profile(
     position = position,
     avatarUri = avatarUri,
     resumeUrl = resumeUrl,
+    lessonTime = lessonTime,
 )
 
 internal fun Profile.toDto() = ProfileDto(
@@ -24,4 +26,5 @@ internal fun Profile.toDto() = ProfileDto(
     position = position,
     avatarUri = avatarUri,
     resumeUrl = resumeUrl,
+    lessonTime = lessonTime,
 )

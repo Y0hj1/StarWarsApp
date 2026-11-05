@@ -19,6 +19,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -145,6 +147,14 @@ private fun ProfileContent(
                 position,
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        profile.lessonTimeLabel?.let { label ->
+            AssistChip(
+                onClick = {},
+                label = { Text(label) },
+                leadingIcon = { Icon(Icons.Filled.Schedule, contentDescription = null) },
             )
         }
 

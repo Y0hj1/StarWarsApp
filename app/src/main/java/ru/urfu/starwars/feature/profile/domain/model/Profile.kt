@@ -7,10 +7,19 @@ data class Profile(
     val avatarUri: String? = null,
     /** Ссылка на резюме/портфолио в сети, например pdf. */
     val resumeUrl: String = "",
+    /** Время любимой пары в формате HH:mm. */
+    val lessonTime: String = "",
 ) {
     val isEmpty: Boolean
-        get() = fullName.isBlank() && position.isBlank() && avatarUri == null && resumeUrl.isBlank()
+        get() = fullName.isBlank() && position.isBlank() && avatarUri == null &&
+            resumeUrl.isBlank() && lessonTime.isBlank()
 }
+
+/** Когда сработает напоминание. */
+data class ReminderSchedule(
+    val triggerAtMillis: Long,
+    val isTomorrow: Boolean,
+)
 
 /** Скачанный файл: content:// URI, который можно отдать просмотрщику, и его MIME-тип. */
 data class DownloadedFile(

@@ -11,6 +11,7 @@ data class ProfileUi(
     val avatarDescription: String,
     val canOpenResume: Boolean,
     val resumeHint: String?,
+    val lessonTimeLabel: String?,
 )
 
 internal object ProfileUiMapper {
@@ -23,5 +24,6 @@ internal object ProfileUiMapper {
         avatarDescription = if (profile.fullName.isBlank()) "Аватар" else "Аватар ${profile.fullName}",
         canOpenResume = profile.resumeUrl.isNotBlank(),
         resumeHint = if (profile.resumeUrl.isBlank()) "Ссылка на резюме не указана" else null,
+        lessonTimeLabel = profile.lessonTime.takeIf { it.isNotBlank() }?.let { "Любимая пара в $it" },
     )
 }

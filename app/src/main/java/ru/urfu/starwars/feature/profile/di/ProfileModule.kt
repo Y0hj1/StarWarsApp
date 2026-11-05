@@ -5,6 +5,8 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import ru.urfu.starwars.feature.profile.data.ProfileRepositoryImpl
+import ru.urfu.starwars.feature.profile.data.reminder.AlarmLessonReminderScheduler
+import ru.urfu.starwars.feature.profile.domain.repository.LessonReminderScheduler
 import ru.urfu.starwars.feature.profile.domain.repository.ProfileRepository
 
 @Module
@@ -12,4 +14,7 @@ import ru.urfu.starwars.feature.profile.domain.repository.ProfileRepository
 abstract class ProfileModule {
     @Binds
     abstract fun bindProfileRepository(impl: ProfileRepositoryImpl): ProfileRepository
+
+    @Binds
+    abstract fun bindLessonReminderScheduler(impl: AlarmLessonReminderScheduler): LessonReminderScheduler
 }
