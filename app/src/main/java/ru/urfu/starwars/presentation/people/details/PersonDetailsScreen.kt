@@ -12,7 +12,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -33,15 +32,17 @@ import androidx.constraintlayout.compose.ChainStyle
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import ru.urfu.starwars.domain.model.Person
+import ru.urfu.starwars.presentation.common.FullScreenError
+import ru.urfu.starwars.presentation.common.FullScreenLoading
 import ru.urfu.starwars.presentation.common.InitialsAvatar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersonDetailsScreen(
     onBack: () -> Unit,
-    viewModel: PersonDetailsViewModel = viewModel(),
+    viewModel: PersonDetailsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -64,11 +65,10 @@ fun PersonDetailsScreen(
                 .padding(padding),
         ) {
             when (val s = state) {
-                PersonDetailsUiState.Loading ->
-                    CircularProgressIndicator(Modifier.align(Alignment.Center))
+                PersonDetailsUiState.Loading -> FullScreenLoading()
 
                 is PersonDetailsUiState.Error ->
-                    Text(s.message, Modifier.align(Alignment.Center))
+                    FullScreenError(message = s.message, onRetry = viewModel::load)
 
                 is PersonDetailsUiState.Content ->
                     PersonDetailsContent(s.person)
