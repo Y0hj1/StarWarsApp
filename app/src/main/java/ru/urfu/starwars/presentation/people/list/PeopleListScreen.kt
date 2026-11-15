@@ -22,8 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import ru.urfu.starwars.domain.model.Person
 import ru.urfu.starwars.presentation.common.InitialsAvatar
+import ru.urfu.starwars.presentation.people.PersonListItemUi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +57,7 @@ fun PeopleListScreen(
 }
 
 @Composable
-private fun PeopleList(people: List<Person>, onPersonClick: (Int) -> Unit) {
+private fun PeopleList(people: List<PersonListItemUi>, onPersonClick: (Int) -> Unit) {
     LazyColumn(contentPadding = PaddingValues(vertical = 4.dp)) {
         items(people, key = { it.id }) { person ->
             PersonRow(person = person, onClick = { onPersonClick(person.id) })
@@ -67,11 +67,11 @@ private fun PeopleList(people: List<Person>, onPersonClick: (Int) -> Unit) {
 }
 
 @Composable
-private fun PersonRow(person: Person, onClick: () -> Unit) {
+private fun PersonRow(person: PersonListItemUi, onClick: () -> Unit) {
     ListItem(
         modifier = Modifier.clickable(onClick = onClick),
         leadingContent = { InitialsAvatar(person.name) },
         headlineContent = { Text(person.name) },
-        supportingContent = { Text("Пол: ${person.gender} · Рождён: ${person.birthYear}") },
+        supportingContent = { Text(person.subtitle) },
     )
 }

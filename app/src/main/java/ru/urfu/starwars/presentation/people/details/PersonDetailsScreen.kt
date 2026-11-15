@@ -34,8 +34,10 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import ru.urfu.starwars.domain.model.Person
 import ru.urfu.starwars.presentation.common.InitialsAvatar
+import ru.urfu.starwars.presentation.people.InfoRowUi
+import ru.urfu.starwars.presentation.people.PersonDetailsUi
+import ru.urfu.starwars.presentation.people.StatUi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,7 +85,7 @@ fun PersonDetailsScreen(
  * ниже — карточка с внешностью.
  */
 @Composable
-fun PersonDetailsContent(person: Person, modifier: Modifier = Modifier) {
+fun PersonDetailsContent(person: PersonDetailsUi, modifier: Modifier = Modifier) {
     ConstraintLayout(
         modifier = modifier
             .fillMaxSize()
@@ -115,7 +117,7 @@ fun PersonDetailsContent(person: Person, modifier: Modifier = Modifier) {
 
         AssistChip(
             onClick = {},
-            label = { Text(person.gender) },
+            label = { Text(person.genderLabel) },
             modifier = Modifier.constrainAs(gender) {
                 top.linkTo(name.bottom, margin = 8.dp)
                 start.linkTo(name.start)
@@ -124,7 +126,7 @@ fun PersonDetailsContent(person: Person, modifier: Modifier = Modifier) {
 
         AssistChip(
             onClick = {},
-            label = { Text("Рождён ${person.birthYear}") },
+            label = { Text(person.birthLabel) },
             modifier = Modifier.constrainAs(birth) {
                 top.linkTo(gender.top)
                 start.linkTo(gender.end, margin = 8.dp)
@@ -133,15 +135,15 @@ fun PersonDetailsContent(person: Person, modifier: Modifier = Modifier) {
 
         val statsBarrier = createBottomBarrier(avatar, gender, birth, margin = 24.dp)
 
-        StatTile("Рост", "${person.height} см", Modifier.constrainAs(height) {
+        StatTile(person.height, Modifier.constrainAs(height) {
             top.linkTo(statsBarrier)
             width = Dimension.fillToConstraints
         })
-        StatTile("Вес", "${person.mass} кг", Modifier.constrainAs(mass) {
+        StatTile(person.mass, Modifier.constrainAs(mass) {
             top.linkTo(statsBarrier)
             width = Dimension.fillToConstraints
         })
-        StatTile("Фильмы", person.filmsCount.toString(), Modifier.constrainAs(films) {
+        StatTile(person.films, Modifier.constrainAs(films) {
             top.linkTo(statsBarrier)
             width = Dimension.fillToConstraints
         })
@@ -157,19 +159,14 @@ fun PersonDetailsContent(person: Person, modifier: Modifier = Modifier) {
         ) {
             Column(Modifier.padding(16.dp)) {
                 Text("Внешность и прочее", style = MaterialTheme.typography.titleMedium)
-                InfoRow("Волосы", person.hairColor)
-                InfoRow("Кожа", person.skinColor)
-                InfoRow("Глаза", person.eyeColor)
-                InfoRow("Транспорт", person.vehiclesCount.toString())
-                InfoRow("Корабли", person.starshipsCount.toString())
-                person.homeworldId?.let { InfoRow("Родная планета", "#$it") }
+                person.infoRows.forEach { InfoRow(it) }
             }
         }
     }
 }
 
 @Composable
-private fun StatTile(title: String, value: String, modifier: Modifier = Modifier) {
+private fun StatTile(stat: StatUi, modifier: Modifier = Modifier) {
     ElevatedCard(modifier = modifier.padding(horizontal = 4.dp)) {
         Column(
             Modifier
@@ -177,22 +174,22 @@ private fun StatTile(title: String, value: String, modifier: Modifier = Modifier
                 .padding(vertical = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(value, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
-            Text(title, style = MaterialTheme.typography.labelMedium)
+            Text(stat.value, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
+            Text(stat.title, style = MaterialTheme.typography.labelMedium)
         }
     }
 }
 
 @Composable
-private fun InfoRow(label: String, value: String) {
+private fun InfoRow(row: InfoRowUi) {
     Column {
         Row(
             Modifier
                 .fillMaxWidth()
                 .padding(vertical = 10.dp),
         ) {
-            Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
-            Text(value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+            Text(row.label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+            Text(row.value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
         }
         HorizontalDivider()
     }
